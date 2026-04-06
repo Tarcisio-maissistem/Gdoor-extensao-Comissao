@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "GDOOR Pedidos Scraper",
+  "version": "3.1.1",
+  "description": "Raspagem de pedidos de venda do GDOOR Web, filtrando por data de conclusão.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "downloads",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://app.gdoorweb.com.br/*",
+    "https://api.gdoorweb.com.br/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://app.gdoorweb.com.br/*"],
+      "js": ["src/interceptor.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://app.gdoorweb.com.br/*"],
+      "js": ["src/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["report.html"],
+      "matches": ["https://app.gdoorweb.com.br/*"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
