@@ -1,16 +1,11 @@
 {
-  "name": "gdoor-web",
-  "version": "1.0.0",
-  "description": "",
+  "name": "gweb-comissoes",
+  "version": "3.4.0",
+  "description": "Extensão Chrome para extração de pedidos de venda do GDOOR Web com comissão por data de conclusão",
   "main": "popup.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
+  "scripts": {},
+  "keywords": ["gdoor", "chrome-extension", "scraper", "pedidos"],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "puppeteer": "^24.40.0"
-  }
+  "type": "commonjs"
 }

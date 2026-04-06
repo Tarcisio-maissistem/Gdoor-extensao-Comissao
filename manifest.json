@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "GDOOR Pedidos Scraper",
-  "version": "3.1.1",
-  "description": "Raspagem de pedidos de venda do GDOOR Web, filtrando por data de conclusão.",
+  "name": "GWeb Comissões",
+  "version": "3.4.0",
+  "description": "Extração de pedidos de venda do GDOOR Web com comissão por data de conclusão.",
   "permissions": [
     "activeTab",
     "scripting",

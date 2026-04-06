@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relatório — GDOOR Pedidos Scraper</title>
+  <title>Relatório — GWeb Comissões</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
@@ -175,12 +175,33 @@
       border-radius: var(--radius) var(--radius) 0 0;
       font-size: 15px;
       font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .date-group-header:hover {
+      background: linear-gradient(135deg, #1f2040, #124080);
     }
 
     .date-group-header .group-stats {
       font-size: 12px;
       opacity: 0.8;
       font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .date-group-body {
+      overflow: hidden;
+    }
+
+    /* Quando o body está oculto, header tem radius completo */
+    .date-group-header:only-child,
+    .date-group-header + .date-group-body[style*="display: none"],
+    .date-group-header + .date-group-body[style*="display:none"] {
+      border-radius: var(--radius);
     }
 
     /* Order table */
@@ -498,6 +519,8 @@
       .status-badge.cancelado { background: #f8d7da !important; color: #721c24 !important; -webkit-print-color-adjust: exact; }
       .scard { break-inside: avoid; }
       .items-row { display: table-row !important; }
+      .date-group-body { display: block !important; }
+      .vendor-orders-table { display: block !important; }
       .expand-btn { display: none; }
       .summary-cards { padding: 16px 20px; }
       .report-content { padding: 0 20px 20px; }

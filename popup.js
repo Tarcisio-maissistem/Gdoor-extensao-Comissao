@@ -1,5 +1,5 @@
 /**
- * popup.js — Lógica do popup da extensão GDOOR Pedidos Scraper
+ * popup.js — Lógica do popup da extensão GWeb Comissões
  * Comunicação bidirecional com content script e background
  */
 

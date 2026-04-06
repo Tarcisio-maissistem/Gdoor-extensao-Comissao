@@ -328,6 +328,7 @@
       cliente: orderData.cliente || '',
       total: orderData.valorTotal || 0,
       pagamento: orderData.formaPagamento || '',
+      alteradoPor: orderData.alteradoPor || '',
       itens: orderData.itens || [],
       observacao: orderData.observacao || '',
       clienteCpfCnpj: orderData.clienteCpfCnpj || '',
@@ -572,7 +573,7 @@
     var allText = document.body.innerText;
 
     // Helper: extrai valor de campo baseado no label
-    // O GDOOR concatena label+valor sem separador: "Número1.283", "Cadastrado porGabriele"
+    // O GDOOR concatena label+valor sem separador: "Numero1.283", "Cadastrado porNome"
     function extractField(label) {
       var patterns = [
         new RegExp(label + '\\s*\\n\\s*([^\\n]+)', 'i'),
@@ -1611,7 +1612,8 @@
     // Pagamentos: tenta varios nomes de campo possiveis
     var payments = d.payments || [];
     var formas = payments.map(function (p) {
-      return p.payment_method_name || p.payment_type || p.description || p.name || p.forma || '';
+      var pm = p.payment_method || {};
+      return pm.name || pm.description || p.payment_method_name || p.payment_type || p.description || p.name || p.forma || '';
     }).filter(Boolean);
 
     // Itens do pedido
@@ -1676,6 +1678,7 @@
       valorDesconto: cached.valorDesconto || 0,
       valorFrete: cached.valorFrete || 0,
       formaPagamento: cached.pagamento,
+      alteradoPor: cached.alteradoPor || '',
       comissao: cached.comissao || 0,
       percentualComissao: cached.percentualComissao || 0,
       observacao: cached.observacao || '',

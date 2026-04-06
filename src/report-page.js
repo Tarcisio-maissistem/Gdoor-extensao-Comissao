@@ -125,17 +125,38 @@
       });
     }
 
-    // Botoes expandir itens e pedidos por vendedor
+    // Botoes expandir itens, pedidos por vendedor e grupos de data
     document.querySelectorAll('.expand-btn').forEach(function (btn) {
       var targetId = btn.dataset.target;
       var target = document.getElementById(targetId);
       if (!target) return;
 
-      // Verifica se e tabela de vendor (tem data-type) ou items-row (tr oculto)
       var isVendorTable = target.dataset.type === 'vendor-orders';
+      var isDateGroup = btn.classList.contains('date-toggle');
 
-      if (isVendorTable) {
-        // Tabela de vendor: visivel por padrao, botao recolhe
+      if (isDateGroup) {
+        // Grupo de data: oculto por padrao, botao expande
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var hidden = target.style.display === 'none';
+          var num = btn.dataset.count || '';
+          if (hidden) {
+            target.style.display = 'block';
+            btn.textContent = '\u25b2 Fechar';
+          } else {
+            target.style.display = 'none';
+            btn.textContent = '\u25bc Abrir (' + num + ')';
+          }
+        });
+        // Tambem permite clicar no header inteiro para expandir
+        var header = btn.closest('.date-group-header');
+        if (header) {
+          header.addEventListener('click', function () {
+            btn.click();
+          });
+        }
+      } else if (isVendorTable) {
+        // Tabela de vendor: oculta por padrao, botao expande
         btn.addEventListener('click', function () {
           var hidden = target.style.display === 'none';
           var num = btn.dataset.count || '';

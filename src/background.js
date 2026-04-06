@@ -1,6 +1,6 @@
 /**
  * background.js — Service Worker (hub de estado e message passing)
- * GDOOR Pedidos Scraper v3.1.0
+ * GWeb Comissões v3.4.0
  *
  * Estado agora é persistido em chrome.storage.session para que o popup
  * mantenha logs, progresso e cronômetro mesmo ao fechar/minimizar/trocar aba.

@@ -1,6 +1,6 @@
 ﻿/**
  * report.js - Funcoes de geracao do HTML do relatorio
- * GDOOR Pedidos Scraper
+ * GWeb Comissoes
  *
  * Metricas:
  *   - Agrupamento por data de conclusao
@@ -132,8 +132,8 @@ var ReportGenerator = (function () {
 
     // ========================= HEADER =========================
     html += '<div class="report-header">';
-    html += '<h1>Relat\u00f3rio de Pedidos de Venda</h1>';
-    html += '<p>GDOOR Web \u2014 Comiss\u00e3o por data de conclus\u00e3o</p>';
+    html += '<h1>GWeb Comiss\u00f5es</h1>';
+    html += '<p>Relat\u00f3rio de Pedidos \u2014 Comiss\u00e3o por data de conclus\u00e3o</p>';
     html += '<div class="meta">';
     html += '<span>Per\u00edodo: ' + escapeHtml(formatDate(dateFrom)) + ' a ' + escapeHtml(formatDate(dateTo)) + '</span>';
     html += '<span>Gerado em: ' + escapeHtml(formatDateTime(generatedAt)) + '</span>';
@@ -193,16 +193,19 @@ var ReportGenerator = (function () {
       var groupItems = group.orders.reduce(function (s, o) { return s + (o.itens ? o.itens.length : 0); }, 0);
       var groupComissao = group.orders.reduce(function (s, o) { return s + (parseFloat(o.comissao) || 0); }, 0);
 
+      var dgId = 'dategroup_' + gi;
       html += '<div class="date-group" data-date="' + escapeHtml(group.date) + '">';
-      html += '<div class="date-group-header">';
+      html += '<div class="date-group-header" style="cursor:pointer">';
       html += '<span>\ud83d\udcc5 ' + escapeHtml(group.date) + '</span>';
       html += '<span class="group-stats">' + group.orders.length + ' pedidos \u00b7 ' + groupItems + ' itens \u00b7 ' + formatBRL(groupTotal);
       if (groupComissao > 0) html += ' \u00b7 Comiss\u00e3o: ' + formatBRL(groupComissao);
+      html += ' <button class="expand-btn date-toggle" data-target="' + dgId + '" data-count="' + group.orders.length + '">\u25bc Abrir (' + group.orders.length + ')</button>';
       html += '</span></div>';
+      html += '<div class="date-group-body" id="' + dgId + '" style="display:none">';
 
       html += '<table class="order-table"><thead><tr>';
       html += '<th>N\u00ba Pedido</th><th>Data Emiss\u00e3o</th><th>Data Conclus\u00e3o</th>';
-      html += '<th>Vendedor</th><th>Cliente</th>';
+      html += '<th>Vendedor</th><th>Finalizado por</th><th>Cliente</th>';
       html += '<th style="text-align:right">Total</th><th>Forma Pagamento</th>';
       html += '<th>Status</th><th>Fonte</th><th>Itens</th>';
       html += '</tr></thead><tbody>';
@@ -220,6 +223,7 @@ var ReportGenerator = (function () {
         html += '<td>' + escapeHtml(formatDate(order.dataEmissao)) + '</td>';
         html += '<td>' + escapeHtml(formatDate(order.dataConclusao)) + '</td>';
         html += '<td>' + escapeHtml(order.vendedor || '\u2014') + '</td>';
+        html += '<td>' + escapeHtml(order.alteradoPor || '\u2014') + '</td>';
         html += '<td>' + escapeHtml(order.cliente);
         if (order.clienteCpfCnpj) html += '<br><small style="color:#888">' + escapeHtml(order.clienteCpfCnpj) + '</small>';
         html += '</td>';
@@ -231,7 +235,7 @@ var ReportGenerator = (function () {
         html += '</tr>';
 
         if (hasItems) {
-          html += '<tr class="items-row" id="' + itemsId + '"><td colspan="10" style="padding:0 14px 14px">';
+          html += '<tr class="items-row" id="' + itemsId + '"><td colspan="11" style="padding:0 14px 14px">';
           html += '<table class="items-subtable"><thead><tr>';
           html += '<th>C\u00f3digo</th><th>Descri\u00e7\u00e3o</th><th style="text-align:right">Qtd</th>';
           html += '<th>Un.</th><th style="text-align:right">Vlr Unit.</th>';
@@ -254,7 +258,7 @@ var ReportGenerator = (function () {
         }
       });
 
-      html += '</tbody></table></div>';
+      html += '</tbody></table></div></div>';
     });
 
     // --- RESUMO POR VENDEDOR (comissao) ---
@@ -302,13 +306,13 @@ var ReportGenerator = (function () {
       html += '<span>' + qty + ' pedido' + (qty !== 1 ? 's' : '') + '</span>';
       html += '<span>Ticket m\u00e9dio: <strong>' + formatBRL(ticket) + '</strong></span>';
       html += '<span class="vendor-card-total">Total: ' + formatBRL(total) + '</span>';
-      html += '<button class="expand-btn" data-target="' + vendorId + '" data-count="' + qty + '">\u25b2 Fechar</button>';
+      html += '<button class="expand-btn" data-target="' + vendorId + '" data-count="' + qty + '">\u25bc Pedidos (' + qty + ')</button>';
       html += '</div></div>';
 
-      html += '<div id="' + vendorId + '" data-type="vendor-orders" class="vendor-orders-table">';
+      html += '<div id="' + vendorId + '" data-type="vendor-orders" class="vendor-orders-table" style="display:none">';
       html += '<table><thead><tr>';
       html += '<th>N\u00ba Pedido</th><th class="col-date">Data Emiss\u00e3o</th>';
-      html += '<th class="col-date">Data Conclus\u00e3o</th><th>Cliente</th>';
+      html += '<th class="col-date">Data Conclus\u00e3o</th><th>Finalizado por</th><th>Cliente</th>';
       html += '<th>Forma Pgto</th><th class="col-total">Total</th>';
       html += '</tr></thead><tbody>';
 
@@ -326,6 +330,7 @@ var ReportGenerator = (function () {
         html += '<td><strong>' + escapeHtml(order.numeroPedido || order._idLista || order.id || '\u2014') + '</strong></td>';
         html += '<td class="col-date">' + escapeHtml(formatDate(order.dataEmissao)) + '</td>';
         html += '<td class="col-date">' + escapeHtml(formatDate(order.dataConclusao)) + '</td>';
+        html += '<td>' + escapeHtml(order.alteradoPor || '\u2014') + '</td>';
         html += '<td>' + escapeHtml(order.cliente || '\u2014');
         if (order.clienteCpfCnpj) html += '<br><small style="color:#9ca3af">' + escapeHtml(order.clienteCpfCnpj) + '</small>';
         html += '</td>';
@@ -334,7 +339,7 @@ var ReportGenerator = (function () {
         html += '</tr>';
       });
 
-      html += '<tr class="row-subtotal"><td colspan="5">Total ' + escapeHtml(group.vendedor) + '</td>';
+      html += '<tr class="row-subtotal"><td colspan="6">Total ' + escapeHtml(group.vendedor) + '</td>';
       html += '<td class="col-total">' + formatBRL(total) + '</td></tr>';
       html += '</tbody></table></div></div>';
     });
@@ -451,7 +456,7 @@ var ReportGenerator = (function () {
 
   function generatePlainText(data, extras) {
     extras = extras || {};
-    var text = 'RELATORIO DE PEDIDOS DE VENDA - GDOOR WEB\n';
+    var text = 'GWEB COMISSOES - RELATORIO DE PEDIDOS DE VENDA\n';
     text += 'Regra: Comissao = data de conclusao, NAO emissao\n';
     text += '='.repeat(60) + '\n\n';
 
@@ -476,6 +481,7 @@ var ReportGenerator = (function () {
         text += '\nPedido: ' + (order.numeroPedido || order._idLista || order.id) + '\n';
         text += '  Cliente: ' + (order.cliente || '') + '\n';
         text += '  Vendedor: ' + (order.vendedor || '-') + '\n';
+        text += '  Finalizado por: ' + (order.alteradoPor || '-') + '\n';
     // Also add Emissao and Pagamento to plain text
         text += '  Data Emissao: ' + (order.dataEmissao || '') + '\n';
         text += '  Data Conclusao: ' + (order.dataConclusao || '') + '\n';
@@ -512,7 +518,7 @@ var ReportGenerator = (function () {
 
     lines.push([
       'No Pedido', 'Data Emissao', 'Data Conclusao',
-      'Cliente', 'CPF/CNPJ', 'Vendedor', 'Status', 'Observacao',
+      'Cliente', 'CPF/CNPJ', 'Vendedor', 'Finalizado por', 'Status', 'Observacao',
       'Cod. Item', 'Descricao Item', 'Quantidade', 'Unidade',
       'Vlr Unitario', 'Desconto Item', 'Vlr Total Item',
       'Subtotal Pedido', 'Desconto Pedido', 'Frete',
@@ -527,6 +533,7 @@ var ReportGenerator = (function () {
         csvSafe(order.cliente),
         csvSafe(order.clienteCpfCnpj),
         csvSafe(order.vendedor),
+        csvSafe(order.alteradoPor),
         csvSafe(order.status),
         csvSafe(order.observacao)
       ];
