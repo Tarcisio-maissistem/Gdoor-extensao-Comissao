@@ -989,20 +989,28 @@
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // ETAPAS 7+8+9 — Abrir nova aba e imprimir
+  // ETAPAS 7+8+9 — Imprimir via iframe oculto (mesma página)
   // ─────────────────────────────────────────────────────────────────
   function _abrirEImprimir(html) {
-    const w = window.open('', '_blank', 'width=460,height=720,scrollbars=yes,toolbar=no,menubar=no,location=no');
-    if (!w) {
-      _toast('\u26A0\uFE0F Pop-up bloqueado! Acesse chrome://settings/content/popups e libere o Gweb.', 'erro');
-      return;
-    }
-    w.document.open();
-    w.document.write(html);
-    w.document.close();
-    // Dispara impressão via JS (sem inline script, sem violar CSP)
-    w.addEventListener('load', function () {
-      setTimeout(function () { w.print(); }, 400);
+    // Remove iframe anterior se existir
+    var old = document.getElementById('_danfe_print_frame');
+    if (old) old.remove();
+
+    var iframe = document.createElement('iframe');
+    iframe.id = '_danfe_print_frame';
+    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;border:none;';
+    document.body.appendChild(iframe);
+
+    var doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    iframe.addEventListener('load', function () {
+      setTimeout(function () {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+      }, 400);
     });
   }
 
