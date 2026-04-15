@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "GWeb Comissões",
-  "version": "3.4.0",
-  "description": "Extração de pedidos de venda do GDOOR Web com comissão por data de conclusão.",
+  "name": "Gweb Tools",
+  "version": "1.0.0",
+  "description": "Extensão unificada: extração de comissões por data de conclusão + geração de DANFE Cupom/Etiqueta para NF-e do GDOOR Web.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -27,13 +27,14 @@
   "content_scripts": [
     {
       "matches": ["https://app.gdoorweb.com.br/*"],
-      "js": ["src/interceptor.js"],
+      "js": ["src/comissao-interceptor.js", "src/danfe-inject.js"],
       "world": "MAIN",
       "run_at": "document_start"
     },
     {
       "matches": ["https://app.gdoorweb.com.br/*"],
-      "js": ["src/content.js"],
+      "js": ["src/comissao-content.js", "src/danfe-content.js"],
+      "css": ["styles.css"],
       "run_at": "document_idle"
     }
   ],

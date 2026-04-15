@@ -1,10 +1,10 @@
 {
-  "name": "gweb-comissoes",
-  "version": "3.4.0",
-  "description": "Extensão Chrome para extração de pedidos de venda do GDOOR Web com comissão por data de conclusão",
+  "name": "gweb-tools",
+  "version": "1.0.0",
+  "description": "Extensão Chrome unificada: Comissões + DANFE Simplificada para GDOOR Web",
   "main": "popup.js",
   "scripts": {},
-  "keywords": ["gdoor", "chrome-extension", "scraper", "pedidos"],
+  "keywords": ["gdoor", "chrome-extension", "comissoes", "danfe", "nfe"],
   "author": "",
   "license": "ISC",
   "type": "commonjs"

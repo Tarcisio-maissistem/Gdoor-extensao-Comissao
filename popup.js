@@ -281,7 +281,7 @@
       try {
         await chrome.scripting.executeScript({
           target: { tabId: currentTabId },
-          files: ['src/content.js']
+          files: ['src/comissao-content.js']
         });
       } catch (e) { /* já injetado */ }
 
@@ -348,7 +348,7 @@
       try {
         await chrome.scripting.executeScript({
           target: { tabId: currentTabId },
-          files: ['src/content.js']
+          files: ['src/comissao-content.js']
         });
       } catch (injectErr) {
         // Ja injetado ou sem permissao — ok

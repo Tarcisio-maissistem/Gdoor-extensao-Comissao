@@ -177,7 +177,6 @@
 
   function log(text, level) {
     if (!level) level = 'info';
-    console.log(PREFIX, '[' + level.toUpperCase() + ']', text);
     sendMsg('LOG', { text: text, level: level });
   }
 
@@ -202,7 +201,6 @@
       reason: reason,
       timestamp: new Date().toISOString()
     });
-    console.log(PREFIX, '[AUDIT] Pedido ' + pedidoId + ': ' + decision + ' - ' + reason);
   }
 
   // =====================================================================
@@ -214,7 +212,6 @@
     try {
       var payload = JSON.parse(e.detail);
       appState.lastApiResponse = payload.data;
-      console.log(PREFIX, 'API capturada:', payload.url);
     } catch (err) {
       console.warn(PREFIX, 'Erro ao parsear API data:', err);
     }
@@ -2150,7 +2147,6 @@
   // =====================================================================
 
   chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    console.log(PREFIX, 'Recebeu:', msg.action || msg.type);
 
     switch (msg.action) {
       case 'START':
@@ -2204,7 +2200,4 @@
     return true;
   });
 
-  console.log(PREFIX, 'Content script inicializado em', window.location.href);
-  console.log(PREFIX, 'Arquitetura: SPA Angular + mat-list-item + gw-order-detail');
-  console.log(PREFIX, 'Regra: Comissao = "Alterado em" (proxy para conclusao), NAO emissao');
 })();

@@ -183,5 +183,4 @@
     origSend.call(xhr);
   });
 
-  console.log('[GDOORInterceptor] ativo (XHR proxy + auth capture)');
 })();
