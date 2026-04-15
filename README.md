@@ -1,23 +1,33 @@
-# GWeb Comissões - Extensão Chrome
+# Gweb Tools — Extensão Chrome
 
-Extensão Chrome (MV3) para extração automática de pedidos de venda do **GDOOR Web**, com cálculo de comissão baseado na **data de conclusão** do pedido.
+Extensão Chrome (Manifest V3) unificada para o **GDOOR Web**, com dois módulos:
 
-## Funcionalidades
+- **Comissões** — extração automática de pedidos de venda com cálculo de comissão por data de conclusão
+- **DANFE** — geração e impressão de DANFE Cupom (80mm) e DANFE Simplificada (100×150mm)
 
-- **Raspagem via API direta** — captura tokens de autenticação da sessão ativa do GDOOR Web
-- **Pipeline paralelo** — até 20 requisições simultâneas para máxima velocidade
-- **Cache inteligente** — pedidos concluídos/cancelados são cacheados por 7 dias no localStorage
-- **Persistência de estado** — retoma de onde parou em caso de interrupção (chrome.storage.session)
-- **Filtro por data de conclusão** — comissão calculada pela data em que o pedido foi finalizado
-- **Relatório HTML completo** com:
-  - Agrupamento por data (recolhível)
-  - Agrupamento por vendedor (recolhível)
-  - Detalhamento de itens por pedido
-  - Resumo com totais, ticket médio e comissões
-  - Exportação CSV (separador `;`, decimais com `,`, UTF-8 BOM)
-  - Exportação texto plano
-  - Impressão otimizada (tema claro)
-- **Teste de conexão API** integrado
+---
+
+## Módulo Comissões
+
+- Raspagem via API direta — captura tokens de autenticação da sessão ativa
+- Pipeline paralelo — até 20 requisições simultâneas
+- Cache inteligente — pedidos concluídos/cancelados cacheados por 7 dias (localStorage)
+- Persistência de estado — retoma de onde parou em caso de interrupção (chrome.storage.session)
+- Filtro por data de conclusão
+- Relatório HTML com agrupamento por data e vendedor, detalhamento de itens, resumo com totais e ticket médio
+- Exportação CSV (`;`, decimais com `,`, UTF-8 BOM) e texto plano
+- Impressão otimizada
+- Teste de conexão API integrado
+
+## Módulo DANFE
+
+- Geração de DANFE a partir do XML da NF-e diretamente no visualizador de PDF do Gweb
+- **DANFE Cupom** — formato 80mm para impressoras térmicas (fontes engrossadas)
+- **DANFE Simplificada** — formato 100×150mm conforme NT 2020.004
+- Impressão direta na mesma página (sem pop-up)
+- Dados extraídos: emitente, destinatário, produtos, impostos, chave de acesso, protocolo, informações complementares
+
+---
 
 ## Instalação
 
@@ -29,39 +39,55 @@ Extensão Chrome (MV3) para extração automática de pedidos de venda do **GDOO
 
 ## Uso
 
+### Comissões
 1. Faça login no [GDOOR Web](https://app.gdoorweb.com.br)
 2. Navegue até a página de **Pedidos de Venda**
 3. Clique no ícone da extensão na barra do Chrome
-4. Defina o **período de datas** (data de conclusão)
+4. Defina o período de datas (data de conclusão)
 5. Clique em **Iniciar Raspagem**
-6. Ao finalizar, o relatório abre automaticamente em nova aba
+6. Ao finalizar, o relatório abre automaticamente
+
+### DANFE
+1. Abra qualquer NF-e no GDOOR Web
+2. Visualize o PDF da nota
+3. Clique em **🧾 DANFE Cupom** ou **📦 DANFE Simplificada**
+4. A impressão abre automaticamente
+
+---
 
 ## Estrutura do Projeto
 
 ```
-manifest.json          # Configuração da extensão Chrome MV3
-popup.html / popup.js  # Interface do popup da extensão
-report.html            # Página do relatório
+manifest.json                # Configuração da extensão (MV3)
+popup.html / popup.js        # Interface do popup (módulo Comissões)
+report.html                  # Página do relatório de comissões
+styles.css                   # Estilos auxiliares
 src/
-  background.js        # Service worker — hub de estado e persistência
-  content.js           # Content script — lógica de raspagem e extração
-  interceptor.js       # MAIN world — captura headers de autenticação
-  report.js            # Gerador do HTML do relatório
-  report-page.js       # Lógica interativa da página de relatório
-icons/                 # Ícones da extensão (16/48/128px)
+  background.js              # Service worker — estado e persistência
+  comissao-content.js        # Content script — raspagem e extração de comissões
+  comissao-interceptor.js    # MAIN world — captura headers de autenticação
+  danfe-content.js           # Content script — geração e impressão de DANFE
+  danfe-inject.js            # MAIN world — interceptação de XML e auth
+  report.js                  # Gerador do HTML do relatório
+  report-page.js             # Lógica interativa da página de relatório
+icons/                       # Ícones da extensão (16/48/128px)
 ```
 
 ## Requisitos
 
-- Google Chrome 116+ (suporte a MV3 e chrome.storage.session)
-- Conta ativa no GDOOR Web (https://app.gdoorweb.com.br)
+- Google Chrome 116+ (Manifest V3, chrome.storage.session)
+- Conta ativa no [GDOOR Web](https://app.gdoorweb.com.br)
 
 ## Permissões
 
-- `activeTab` — acesso à aba ativa do GDOOR
-- `storage` — persistência de estado e cache
-- `host_permissions` — acesso às URLs do GDOOR Web e API
+| Permissão | Uso |
+|-----------|-----|
+| `activeTab` | Acesso à aba ativa do GDOOR |
+| `scripting` | Injeção de scripts nas páginas |
+| `downloads` | Exportação de relatórios (CSV) |
+| `storage` | Persistência de estado e cache |
+| `host_permissions` | Acesso às URLs do GDOOR Web e API |
 
 ## Versão
 
-3.4.0
+1.0.0
